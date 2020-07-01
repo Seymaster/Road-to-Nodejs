@@ -1,6 +1,22 @@
+const express = require('express');
+const taskRouter = require("./routes/task")
+const sequelize = require('./models/database')
+const db = require("./models/Task")
+const app = express();
 
-const http = require('http');
-const routes = require('./routes')
 
-const server = http.createServer(routes);
-server.listen(3000);
+app.use(express.json());
+app.use("/", taskRouter);
+
+
+sequelize
+.sync(db)
+.then((result) =>{
+    // console.log(result);
+    app.listen(8080, ()=>{
+        console.log("server is working")
+    });
+})
+.catch((err) =>{
+    console.log(err);
+});
