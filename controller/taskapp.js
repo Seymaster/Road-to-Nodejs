@@ -21,7 +21,10 @@ exports.postTask = (req,res,next) =>{
     })
     .then((result)=>{
         // console.log(result);
-        res.status(201).json();
+        res.send({
+            status: 200,
+            message: "Your task has been saved"
+        }),201
     })
     .catch((err)=>{
         console.log(err);
@@ -31,7 +34,7 @@ exports.postTask = (req,res,next) =>{
 
 exports.getTask = (req,res,next) =>{
     const taskid = req.params.id;
-    Task.findAll({where: {id:taskid}})
+    Task.findOne({where: {id:taskid}})
     .then(task =>{
         // console.log(task);
         res.status(201).json(task)
@@ -44,17 +47,48 @@ exports.getTask = (req,res,next) =>{
 
 exports.updateTask = (req,res,next) =>{
     const taskid = req.params.id;
-    const updatetodo = req.body.updatetodo
-    const updatedesc = req.body.updatedesc
-    Task.findAll({where: {id: taskid}})
-    .then(task =>{
-        task.task = updatetodo;
+    const updatetask = req.body.updatetask;
+    const updatedesc = req.body.updatedesc;
+    Task.findOne({where: {id: taskid}})
+    .then( task =>{
+        // console.log(task)
+        if(task == 1){
+        task.task = updatetask;
         task.description = updatedesc
-        task.save();
+        task.save()
+        res.status(201).json(task)
+        }else{
+            res.send({
+                message: "Cannot update task, maybe task not available"
+            })
+        }
     })
     .catch(err =>{
         console.log(err);
-    })
+    });
 
+};
+
+exports.deleteTask = (req,res,next) =>{
+    const taskid = req.params.id;
+    Task.findOne({where: {id:taskid}})
+    .then(task =>{
+        // console.log(task);
+        if(task ==1 ){
+            task.destroy()
+            res.send({
+                status: 200,
+                message: "Your task with id= ${taskid} has been deleted"
+            });
+        }else{
+            res.send({
+                message: "Cannot delete task, maybe task not available"
+            });
+        }
+    })
+    .catch(err =>{
+        console.log(err)
+        res.status(404).json(err)
+    });
 }
 
