@@ -3,12 +3,15 @@ const router = express.Router();
 const taskController = require("../controller/taskapp");
 const middleware = require("../middleware/middleware")
 const schemas = require("../middleware/schemas")
+const { cloudinaryConfig, uploader  } = require("../configs/cloudinary");
+const { profileUpload } = require("../multerUpload");
 
 // GET /tasks
 router.get("/tasks", taskController.getAllTask);
 
 // POST /tasks
-router.post("/tasks", middleware.addTaskmiddleware(schemas.taskPOST, 'body'), taskController.postTask);
+router.use("*",cloudinaryConfig)
+router.post("/tasks", profileUpload, middleware.addTaskmiddleware(schemas.taskPOST, 'body'), taskController.postTask);
 
 // GET /tasks/id
 router.get("/tasks/:id", middleware.paramsmiddleware(schemas.taskParams, 'params'), taskController.getTask);

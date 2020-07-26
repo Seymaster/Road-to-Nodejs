@@ -1,6 +1,7 @@
 const Task = require("../models/Task");
 const middleware = require("../middleware/middleware");
 const schemas = require("../middleware/schemas");
+const { cloudinaryConfig, uploader  } = require("../configs/cloudinary");
 
 exports.getAllTask = (req,res,next) =>{
     Task.findAll()
@@ -17,20 +18,29 @@ exports.getAllTask = (req,res,next) =>{
 exports.postTask = (req,res,next) =>{
     const task = req.body.task;
     const description = req.body.description;
-    Task.create({
-        task: task,
-        description: description
-    })
-    .then((result)=>{
-        // console.log(result);
-        res.send({
-            status: 200,
-            message: "Your task has been saved"
-        }),201
+    const profimage = req.file.path
+    uploader.upload(profimage).then((data)=>{
+        let imageUrl = data.secure_url
+        Task.create({
+            task: task,
+            description: description,
+            image: imageUrl
+        })
+        .then((result)=>{
+            // console.log(result);
+            res.send({
+                status: 200,
+                message: "Your task has been saved"
+            }),201
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.status(422).json();
+        });
     })
     .catch((err)=>{
         console.log(err);
-        res.status(422).json();
+        res.status(422).json(); 
     });
 };
 

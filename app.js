@@ -5,7 +5,7 @@ const taskRouter = require("./routes/task")
 const sequelize = require('./models/database')
 const db = require("./models/Task")
 const app = express();
-
+require("dotenv").config();
 
 app.use(express.json());
 app.use(logger('dev'));
