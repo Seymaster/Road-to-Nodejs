@@ -15,6 +15,10 @@ const Task = sequelize.define('todo',{
     description: {
         type: Sequelize.STRING,
         allowNull: false,
+    },
+    image: {
+        type: Sequelize.STRING,
+        allowNull: true
     }
 });
 

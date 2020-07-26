@@ -1,4 +1,5 @@
 const express = require('express');
+const logger  = require("morgan")
 const PORT = process.env.port || 8080;
 const taskRouter = require("./routes/task")
 const sequelize = require('./models/database')
@@ -7,6 +8,7 @@ const app = express();
 
 
 app.use(express.json());
+app.use(logger('dev'));
 app.use("/", taskRouter);
 
 sequelize
